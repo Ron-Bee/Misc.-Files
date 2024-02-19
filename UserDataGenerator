@@ -1,0 +1,17 @@
+import Foundation
+
+struct User: Codable {
+    let id: Int
+    let name: String
+    let email: String
+}
+
+// ... (functions for generating random data: generateRandomName, generateRandomDate)
+
+// Function to generate a large JSON file 
+func generateLargeJSONFile(numberOfUsers: Int) {
+    // ... (same as before)
+}
+
+// Example usage (generate a file with 1000 users)
+generateLargeJSONFile(numberOfUsers: 1000) 

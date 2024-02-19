@@ -1,0 +1,74 @@
+import org.usb4java.*;
+
+public class PalmHotSyncFixer {
+    private static final int PALM_VENDOR_ID = 0xABCD; // Replace with actual ID
+    private static final int PALM_PRODUCT_ID = 0x1234; // Replace with actual ID
+
+    static {
+        try {
+            System.loadLibrary("palmDriverLib"); // Load your native library
+        } catch (UnsatisfiedLinkError e) {
+            System.err.println("Error loading native library: " + e.getMessage());
+            System.exit(1); // Exit on native library load failure
+        }
+    }
+
+    public native boolean isHotSyncDriverActive();
+    public native int activateHotSyncDriver();
+    public native int sendHotSyncCommand(byte[] commandData);
+    public native int resetDevice();
+
+    public static void main(String[] args) {
+        try {
+            Context context = new Context();
+            int result = LibUsb.init(context);
+            if (result != LibUsb.SUCCESS) {
+                throw new LibUsbException("Unable to initialize libusb.", result);
+            }
+
+            Device device = findPalmDevice(context);
+            if (device != null) {
+                DeviceHandle handle = new DeviceHandle();
+                result = LibUsb.open(device, handle);
+                if (result != LibUsb.SUCCESS) {
+                    throw new LibUsbException("Unable to open device.", result);
+                }
+
+                try {
+                    // 1. Check if HotSync driver is active
+                    if (!isHotSyncDriverActive()) {
+                        System.out.println("HotSync driver not active. Attempting to activate...");
+                        result = activateHotSyncDriver();
+                        if (result != 0) { // Assuming 0 indicates success
+                            System.err.println("Failed to activate HotSync driver.");
+                        }
+                    }
+
+                    // 2. Try basic HotSync command
+                    sendHotSyncCommand(someCommandData); // Replace with actual command
+
+                    // 3. If still not working, try resetting the device
+                    if (shouldResetDevice()) {
+                        result = resetDevice();
+                        if (result != 0) {
+                            System.err.println("Failed to reset device.");
+                        }
+                    }
+                } finally {
+                    LibUsb.close(handle);
+                }
+            } else {
+                System.out.println("Palm device not found.");
+            }
+        } catch (LibUsbException e) {
+            System.err.println("LibUsb error: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Unexpected error: " + e.getMessage());
+            e.printStackTrace(); // For debugging
+        } finally {
+            LibUsb.exit(null);
+        }
+    }
+
+    // ... implementation of findPalmDevice, shouldResetDevice
+}

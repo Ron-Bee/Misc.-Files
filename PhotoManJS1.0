@@ -1,0 +1,49 @@
+const Pica = require('pica'); 
+const pica = new Pica();
+
+const imageUpload = document.getElementById('imageUpload');
+const imagePreview = document.getElementById('imagePreview');
+const errorMessage = document.getElementById('errorMessage');
+
+imageUpload.addEventListener('change', (event) => {
+    errorMessage.textContent = ""; 
+    const file = event.target.files[0];
+
+    if (!file.type.startsWith('image/')){
+        errorMessage.textContent = "Please upload a valid image file.";
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            imagePreview.innerHTML = ''; // Clear previous image
+            imagePreview.appendChild(img);
+        }
+        img.src = e.target.result;
+    }
+    reader.readAsDataURL(file);
+});
+
+function resizeImage() {
+    const img = imagePreview.querySelector('img');
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = 200; 
+    canvas.height = img.height * (200 / img.width);
+
+    pica.resize(img, canvas, {
+        quality: 3,  
+        unsharpAmount: 80, 
+        unsharpRadius: 0.6,
+        unsharpThreshold: 2
+    })
+    .then(result => canvas) 
+    .then(resizedCanvas => {
+        img.src = resizedCanvas.toDataURL();
+    });
+}
+
+// ... (rotateImage, cropImage, applyGrayscale functions from previous responses) ... 

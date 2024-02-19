@@ -1,0 +1,39 @@
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <cstdlib>
+
+using namespace std;
+
+// Function to compile and execute the code
+void executeCode(const string& code) {
+   // Write code to a temporary file
+   ofstream file("temp.cpp");
+   if (!file.is_open()) {
+       cout << "Error: Unable to create temp file." << endl;
+       return;
+   }
+   file << code;
+   file.close();
+
+   // Compile the code
+   int compileStatus = system("g++ temp.cpp -o temp");
+   if (compileStatus != 0) {
+       cout << "Compilation failed." << endl;
+       return;
+   }
+
+   // Execute the compiled code
+   int executionStatus = system("./temp");
+   if (executionStatus == 0) {
+       cout << "Compilation successful. Output:" << endl;
+   } else {
+       cout << "Execution failed." << endl;
+   }
+}
+
+int main() {
+   string code = "#include<iostream>\nint main() {std::cout << \"Hello, World!\" << std::endl; return 0;}";
+   executeCode(code);
+   return 0;
+}

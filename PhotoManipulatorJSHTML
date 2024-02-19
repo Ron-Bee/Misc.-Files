@@ -1,0 +1,45 @@
+function resizeImage() {
+    const img = imagePreview.querySelector('img');
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = 200; // Example resize
+    canvas.height = img.height * (200 / img.width); 
+
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+    img.src = canvas.toDataURL(); // Update the preview
+}
+
+const imageUpload = document.getElementById('imageUpload');
+const imagePreview = document.getElementById('imagePreview');
+
+imageUpload.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        imagePreview.appendChild(img);
+    }
+
+    reader.readAsDataURL(file);
+});
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Photo Manipulator</title>
+    <style>
+        /* Basic styling - adjust as needed */
+    </style>
+</head>
+<body>
+    <h1>Upload Your Photo</h1>
+    <input type="file" id="imageUpload" accept="image/*">
+    <div id="imagePreview"></div>
+
+    <script src="script.js"></script> 
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Photo Manipulator</title>
+    <style> 
+        /* Basic styling - adjust as needed */ 
+        body {
+            font-family: sans-serif;
+        }
+
+        #imagePreview {
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload Your Photo</h1>
+    <input type="file" id="imageUpload" accept="image/*">
+    <div id="imagePreview"></div>
+
+    <button onclick="resizeImage()">Resize</button>
+    <button onclick="rotateImage()">Rotate</button>
+    <button onclick="cropImage()">Crop</button>
+    <button onclick="applyGrayscale()">Grayscale</button>
+
+    <div id="errorMessage" style="color: red;"></div> 
+
+    <script src="pica.js"></script> 
+    <script src="script.js"></script> 
+</body>
+</html>
